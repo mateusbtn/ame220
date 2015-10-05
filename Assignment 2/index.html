@@ -1,0 +1,143 @@
+<html>
+<head>
+
+<style>
+  html,body{
+    margin: 0px;
+    background-color: black;
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
+  }
+  form{
+    position: fixed;
+    display: block;
+    color: white;
+    bottom: 50%;
+  }
+  #radio1{
+    color: white;
+    margin-left: 0%;
+    bottom: 50%;
+  }
+  #radio2{
+    color: white;
+    right: 90%;
+    bottom: 50%;
+  }
+  .nav{
+     position: fixed;
+     display: block;
+     bottom: 10px;
+     color: white;
+  }
+  #container{
+    width: 80%;
+    height: 80%;
+  }
+  .slide{
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-color: black;
+    background-size: contain;
+    position: absolute;
+  }
+
+</style>
+
+<script src="jquery-1.11.3.js" type="text/javascript"></script>
+
+<script>
+  var slideShow = {
+    initialize:function(obj,type,initSlide){ 
+      slideShow.currentSlide = initSlide;
+      slideShow.animation = type;
+      slideShow.obj = obj;
+      var outS = "";
+      for (var i = 0; i < obj.length; i++){
+        outS = outS + "<div style='background-image:url(" + obj[i]+  ")' class='slide' id='slide" + i + "'> </div>";
+      }
+      document.getElementById("container").innerHTML = outS;
+      $(".slide").fadeOut(0);
+      $("#slide" + initSlide).fadeIn(0);
+    },
+
+    goPrev:function(){
+      var bw = $("body").width() + "px"
+      var next = slideShow.currentSlide - 1
+      if(next < 0){
+        next = 3;
+      }
+      if(slideShow.animation === "fade"){
+        $("#slide" + slideShow.currentSlide).stop().fadeOut('slow');
+        $("#slide" + next).stop().fadeIn('slow');
+      }
+      else{
+        $("#slide" + slideShow.currentSlide).stop().animate({"margin-left" : bw},'slow').fadeOut(0);
+        $("#slide" + next).stop().animate({"margin-left": "-" +  bw},0).fadeIn(0).animate({"margin-left":"0px"}, 'slow')
+      }
+      slideShow.currentSlide = next;
+    },
+
+    goNext:function(){
+      var next = slideShow.currentSlide + 1
+      if(next > 3){
+        next = 0;
+      }
+      var bw = $("body").width() + "px"
+      if(slideShow.animation === "fade"){
+        $("#slide" + slideShow.currentSlide).stop().fadeOut('slow');
+        $("#slide" + next).stop().fadeIn('slow');
+      }
+      else{
+        $("#slide" + slideShow.currentSlide).stop().animate({"margin-left" : "-" + bw},'slow').fadeOut(0);
+        $("#slide" + next).stop().animate({"margin-left": bw},0).fadeIn(0).animate({"margin-left":"0px"}, 'slow')
+      }
+      slideShow.currentSlide = next;
+    },
+
+    currentSlide:0,
+    obj:null,
+    animation:null
+  }
+
+
+  var startUp = function(){
+    var obj = [
+      "https://imagem.biz/wp-content/uploads/2015/05/a%C3%A7ai.jpg",
+      "http://peachmarketing.com/wp-content/uploads/2012/03/peachzdfgad.jpg",
+      "https://www.organicfacts.net/wp-content/uploads/2013/05/Banana3.jpg",
+      "http://a3145z1.americdn.com/wp-content/uploads/2013/09/pineapple-fruit-with-amazing-health-benefits-featured.jpg"
+      ]
+    slideShow.initialize(obj, "fade", 0); 
+  }
+
+  var fading=function(){
+    slideShow.animation = "fade";
+    slideShow.initialize(slideShow.obj, slideShow.animation, slideShow.currentSlide);
+  }
+
+  var swiping=function(){
+    slideShow.animation = "swipe";
+    slideShow.initialize(slideShow.obj, slideShow.animation, slideShow.currentSlide);
+  } 
+</script>
+
+</head>
+
+<body onload="startUp()">
+  <div id='container'> 
+  </div>
+    <form>
+      <input type="radio" id="radio1" name="button" value="fade" onclick="fading()">
+      <label for="radio1">Fade</label>
+      <input type="radio" id="radio2" name="button" value="swipe" onclick="swiping()">
+      <label for="radio2">Swipe</label>
+    </form>
+  <a style='left:10px' class='nav' href='javascript:slideShow.goPrev()'> Prev </a>
+  <a style='right:10px' class='nav' href='javascript:slideShow.goNext()'> Next </a>
+  
+</body>
+</html>
