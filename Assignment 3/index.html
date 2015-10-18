@@ -70,23 +70,6 @@ function androidSelect() {
   $("#ios").fadeOut();
 }
 
-/*function resizeImage() {
-  var imagem = document.getElementById("imagePreview");
-  var android = document.getElementById("android");
-  var ios = document.getElementById("ios");
-
-  if (android.checked){ 
-    imagem.style.height = android + "px";
-    imagem.style.width = android + "px";
-  }
-
-  else
-    if (ios.checked){ 
-    imagem.style.height = ios + "px";
-    imagem.style.width = ios + "px";
-  }
-} */
-  
 function resizeImage(sel) {
   var imagem = document.getElementById("imagePreview");
   imagem.style.height = sel.value + "px";
