@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>
+  Image Resizer
+</title>
+<style>
+  #imagePreview{
+      height: 300px;
+      width: 300px;
+      display: block;
+  }
+
+</style>
+<script src="jquery-1.11.3.js" type="text/javascript"></script>
+
+<script>
+function imageUploaded() {
+   var file = $('#uploadImage').get(0);
+   if(file.files[0].type.split("/")[0].toLowerCase() != "image") {
+        alert("Incorrect file type -- Please ensure you are uploading an image file.");
+   }
+   
+   if ( file.files && file.files[0] && file.files[0].type.split("/")[0].toLowerCase() === "image") {
+        var FR = new FileReader();
+        FR.onload = function(e) {
+            var data = e.target.result;
+            var canvas = document.createElement("canvas");
+            var img = document.createElement("img");
+            img.onload= function(){
+                 var MAX_WIDTH = 512;
+                 var MAX_HEIGHT = 512;
+                 var width = img.width;
+                 var height = img.height;
+                 var w2 = width;
+                 var h2 = height;
+
+                 if (width > height) {
+                     if (width > MAX_WIDTH) {
+                        h2 = height * MAX_WIDTH / width;
+                        w2 = MAX_WIDTH;
+                    }
+                 } else {
+                     if (height > MAX_HEIGHT) {
+                        w2 = width * MAX_HEIGHT / height;
+                        h2 = MAX_HEIGHT;
+                    }
+                }
+                canvas.width = w2;
+                canvas.height = h2;
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, w2, h2);
+                var base64St = canvas.toDataURL("image/png");
+                document.getElementById("imagePreview").src = base64St;
+                document.getElementById("imagePreview").style.height = MAX_HEIGHT + "px";
+                document.getElementById("imagePreview").style.width= MAX_WIDTH + "px";
+            }
+            img.src = data;
+        };  
+        FR.readAsDataURL( file.files[0] );
+   }
+}
+
+function iosSelect() {
+  $("#ios").fadeIn();
+  $("#android").fadeOut();
+}
+
+function androidSelect() {
+  $("#android").fadeIn();
+  $("#ios").fadeOut();
+}
+
+/*function resizeImage() {
+  var imagem = document.getElementById("imagePreview");
+  var android = document.getElementById("android");
+  var ios = document.getElementById("ios");
+
+  if (android.checked){ 
+    imagem.style.height = android + "px";
+    imagem.style.width = android + "px";
+  }
+
+  else
+    if (ios.checked){ 
+    imagem.style.height = ios + "px";
+    imagem.style.width = ios + "px";
+  }
+} */
+  
+function resizeImage(sel) {
+  var imagem = document.getElementById("imagePreview");
+  imagem.style.height = sel.value + "px";
+  imagem.style.width = sel.value + "px";
+}
+
+</script>
+
+</head>
+
+<body>
+  <input type="radio" id="radio1" name="button" onclick="iosSelect()"> IOS
+  <input type="radio" id="radio2" name="button" onclick="androidSelect()"> Android
+  <br>
+  <br>
+  <select id="ios" onchange="resizeImage(this)">
+    <option value="512" id="iTunesArtwork"j> iTunesArtwork </option>
+    <option value="1024" id="iTunesArtwork_2x"> iTunesArtwork@2x </option>
+    <option value="120" id="icon-60_2x"> Icon-60@2x.png </option>
+    <option value="180" id="icon-60_3x"> Icon-60@3x.png </option>
+    <option value="76" id="icon-76"> Icon-76.png </option>
+    <option value="152" id="icon-76_2x"> Icon-76@2x.png </option>
+    <option value="40" id="icon-Small-40"> Icon-Small-40.png </option>
+    <option value="80" id="icon-Small-40_2x"> Icon-Small-40@2x.png </option>
+    <option value="120" id="icon-Small-40_3x"> Icon-Small-40@3x.png </option>
+    <option value="29" id="icon-Small"> Icon-Small.png </option>
+    <option value="58" id="icon-Small_2x"> Icon-Small@2x.png </option>
+
+    <option value="57" id="icon"> Icon.png </option>
+    <option value="114" id="icon_2x"> Icon@2x.png </option>
+    <option value="72" id="icon-72"> Icon-72.png </option>
+    <option value="144" id="icon-72_2x"> Icon-72@2x.png </option>
+    <option value="29" id="icon-Small"> Icon-Small.png </option>
+    <option value="58" id="icon-Small_2x"> Icon-Small@2x.png </option>
+    <option value="50" id="icon-Small-50"> Icon-Small-50.png </option>
+    <option value="100" id="icon-Small-50_2x"> Icon-Small-50@2x.png </option>
+  </select>
+  <br>
+  <select id="android" onchange="resizeImage(this)">
+    <option value="48" id="mdpi"> mdpi </option>
+    <option value="72" id="hdpi"> hdpi </option>
+    <option value="96" id="xhdpi"> xhdpi </option>
+    <option value="144" id="xxhdpi"> xxhdpi </option>
+    <option value="192" id="xxxhdpi"> xxxhdpi </option>
+    <option value="512" id="gplaystore"> Google Play Store </option>
+  </select>
+
+  <br>
+  <br>
+  <input type="file" name="uploadImage" id="uploadImage" onchange="imageUploaded()">
+  <img id="imagePreview">
+</body>
+
+
+</html>
