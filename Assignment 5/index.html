@@ -1,0 +1,418 @@
+<html>
+<head>
+<style>
+
+.miniButton {
+  margin : 2px;
+  border : 4px;
+  background-color: white;
+  color: black;
+} 
+
+@keyframes animationStartUp {
+  0% {background-color: black;}
+  50% {background-color: grey;}
+  100% {background-color: white;}
+}
+
+#addNew
+{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    margin-top: 1000px;
+    top: 0px;
+    background: rgba(0,0,0,.7);
+    transition: 1s;
+}
+
+  #clockDigital{
+    width: 330px;
+    height: 100px;
+    border: 2px solid black;
+    display: inline-block;
+    margin-left: 200px;
+    margin-bottom: 65px;
+  }
+
+  #clockText{
+    font-size: 90px;
+  }  
+
+  #clockWrapper{
+    width: 300px;
+    height: 300px;
+    margin-left: 20%;
+    border: 1px solid black;
+    border-radius: 150px;
+    display: inline-block;
+  }
+
+  .nums
+  {
+    position: absolute;
+    top: 150px;
+    width: 290px;
+    text-align: right;
+  }
+  #n1{
+    transform: rotate(-60deg);
+  }
+  #n2{
+    transform: rotate(-30deg);
+  }
+  #n3{
+    transform: rotate(0deg);
+  }
+  #n4{
+    transform: rotate(30deg);
+  }
+  #n5{
+    transform: rotate(60deg);
+  }
+  #n6{
+    transform: rotate(90deg);
+  }
+  #n7{
+    transform: rotate(120deg);
+  }
+  #n8{
+    transform: rotate(150deg);
+  }
+  #n9{
+    transform: rotate(180deg);
+  }
+  #n10{
+    transform: rotate(210deg);
+  }
+  #n11{
+    transform: rotate(240deg);
+  }
+  #n12{
+    transform: rotate(270deg);
+  }
+  .needle
+  {
+     margin-top: 150px;
+     position: absolute;
+     width: 300px;
+     line-height: 0px;
+  }
+  .needle span
+  {
+      display: block;
+      width: auto;
+      margin-left: 140px;
+     text-align: left;
+  }
+  #hour span{
+    background-color: red;
+    max-width: 100px;
+    height: 2px;
+  }
+  #min span{
+    background-color: blue;
+    max-width: 120px;
+    height: 2px;
+  }
+  #secs span{
+    background-color: black;
+    max-width: 135px;
+    height: 1px;
+  }
+</style>
+
+<script>
+  function updateClock(date)
+  {
+    date = date || new Date();
+    var h = date.getUTCHours() % 12;
+    var m = date.getUTCMinutes();
+    var s = date.getUTCSeconds();
+    //now we get the time zone selected by the user and apply it to the clock
+    var e = document.getElementById("timeZones");
+    var selectedValue = e.options[e.selectedIndex].value;
+    var hourSelected;
+    var minuteSelected;
+    
+    if (selectedValue.length == 6){
+      hourSelected = selectedValue.substring(1,3);
+      minuteSelected = selectedValue.substring(4,6);
+    }
+
+    if (selectedValue.length == 5){
+      hourSelected = selectedValue.substring(0,2);
+      minuteSelected = selectedValue.substring(3,5);
+    }
+
+    var correctedHour = parseInt(hourSelected);
+    var correctedMinute = parseInt(minuteSelected);
+    var h = h + correctedHour;
+    var m = m + correctedMinute;
+
+
+    var hdeg = (h - 3)*30;
+    var mdeg = (m - 15)*6;
+    var sdeg = (s - 15)*6;
+    document.getElementById("hour").style.transform = "rotate(" + hdeg + "deg)";
+    document.getElementById("min").style.transform = "rotate(" + mdeg + "deg)";
+    document.getElementById("secs").style.transform = "rotate(" + sdeg + "deg)";
+
+  }
+
+  function updateDigitalClock(date) {
+    date = date || new Date();
+    var h = date.getUTCHours();
+    var m = date.getUTCMinutes();
+    var s = date.getUTCSeconds();
+    //now we get the time zone selected by the user and apply it to the clock
+    var e = document.getElementById("timeZones");
+    var selectedValue = e.options[e.selectedIndex].value;
+    var hourSelected;
+    var minuteSelected;
+    
+    if (selectedValue.length == 6){
+      hourSelected = selectedValue.substring(1,3);
+      minuteSelected = selectedValue.substring(4,6);
+    }
+
+    if (selectedValue.length == 5){
+      hourSelected = selectedValue.substring(0,2);
+      minuteSelected = selectedValue.substring(3,5);
+    }
+
+    var correctedHour = parseInt(hourSelected);
+    var correctedMinute = parseInt(minuteSelected);
+    var h = h + correctedHour;
+    var m = m + correctedMinute;
+
+    h = checkTime(h);
+    m = checkTime(m);
+    s = checkTime(s);
+    var hS = h.toString();
+    var mS = m.toString();
+    var sS = s.toString();
+    document.getElementById("clockText").innerHTML = hS + ":" + mS + ":" + sS;
+  }
+
+  function checkTime (i) {
+    if(i<10)
+      i = "0" + i;
+    return i; 
+  }
+
+  function startUp()
+  {
+    document.getElementById("clockWrapper").style.animation = "animationStartUp 1.5s";
+    document.getElementById("clockDigital").style.animation = "animationStartUp 1.5s";
+    generateMyTimeZoneList();
+    setInterval("updateClock(null)", 1000);
+    setInterval("updateDigitalClock(null)",1000);
+  }
+  function cancelTimeZone()
+  {
+    document.getElementById("addNew").style.marginTop = "1000px";
+    setTimeout(addNewTZ_Aux1, 1000);
+  }
+  function addNewTZ()
+  {
+    document.getElementById("addNew").style.display = "block";
+    setTimeout(addNewTZ_Aux, 0);
+  }
+  function addNewTZ_Aux(){
+    document.getElementById("addNew").style.marginTop = "0px";
+  }
+  function addNewTZ_Aux1(){
+    document.getElementById("addNew").style.display = "none";
+  }
+  function generateMyTimeZoneList(){
+    var outS = "";
+    outS += "<a href='javascript:TZSelected()'> Current Location </a><br>";
+    // generate markup
+    outS += "<a href='javascript:addNewTZ()'>+ New </a>";
+    document.getElementById("placeList").innerHTML = outS;
+  
+  }
+  function TZSelected()
+  {
+    var e = document.getElementById("timeZones");
+    var selectedValue = e.options[e.selectedIndex].text;
+    alert(selectedValue);
+  }
+
+var myTimeZones = [];
+myTimeZones.push("-12:00"); myTimeZones.push("-11:00"); myTimeZones.push("-10:00"); myTimeZones.push("-9:30");
+
+function addTimeZone(){
+  var nameTZ = prompt("Enter the name of the time zone");
+  alert("You will now insert the time zone.\nYou should follow a (-)HH:MM pattern\nwhere HH is the hour and MM are the minutes");
+  var timeTZ = prompt("Enter the time zone");
+  myTimeZones.push(timeTZ);
+
+  document.getElementById("timeZones").innerHTML += "<option value='" + timeTZ + "'>" + nameTZ + "</option>";
+}
+
+function removeTimeZone() {
+  var e = document.getElementById("timeZones");
+  var selectedValue = e.options[e.selectedIndex].value;
+
+  myTimeZones.splice(selectedValue,1);
+
+  var i;
+  for (i=0; i<e.length; i++) {
+    if (e.options[i].value == selectedValue) {
+      e.remove(i);
+    }
+  }
+}
+
+function changeBackgroundAnalog(value) {
+  document.getElementById("clockWrapper").style.backgroundColor = value;
+}
+
+function changeBackgroundDigital(value) {
+  document.getElementById("clockDigital").style.backgroundColor = value;
+}
+
+function changeFontSize(value) {
+  document.getElementById("clockText").style.fontSize = value + "px";
+}
+
+function changeBorderColorAnalog(value) {
+  document.getElementById("clockWrapper").style.borderColor = value;
+}
+
+function changeBorderColorDigital(value) {
+  document.getElementById("clockDigital").style.borderColor = value;
+}
+
+function changeBorderSizeAnalog(value) {
+  document.getElementById("clockWrapper").style.borderWidth = value + "px";
+}
+
+function changeBorderSizeDigital(value) {
+  document.getElementById("clockDigital").style.borderWidth = value + "px";
+}
+</script>
+</head>
+
+<body onload='startUp()'>
+  <div id='clockWrapper'>
+    <div class='nums' id='n1'> - </div>
+    <div class='nums' id='n2'> - </div>
+    <div class='nums' id='n3'> = </div>
+    <div class='nums' id='n4'> - </div>
+    <div class='nums' id='n5'> - </div>
+    <div class='nums' id='n6'> = </div>
+    <div class='nums' id='n7'> - </div>
+    <div class='nums' id='n8'> - </div>
+    <div class='nums' id='n9'> = </div>
+    <div class='nums' id='n10'> - </div>
+    <div class='nums' id='n11'> - </div>
+    <div class='nums' id='n12'> = </div>
+
+    <div  class='needle' id='hour'></span> <span> </div>
+    <div  class='needle' id='min'><span> </span> </div>
+    <div  class='needle' id='secs'><span> </span></div>
+  </div>
+
+  <div id='clockDigital'>
+    <span id='clockText'></span>
+  </div>
+
+  <div id='placeList'> </div>
+
+  <div id="addNew"> 
+      <select id='timeZones'>
+        <option value='-12:00'> US minor islands (-12:00) </option>
+        <option value='-11:00'> Hawaii (-11:00) </option>
+        <option value='-10:00'> New Zealand (-10:00) </option>
+        <option value='-09:30'> French Polynesia (-9:30) </option>
+      </select>
+      <a class='miniButton' href='javascript:addTimeZone()'> Add </a>
+      <a class='miniButton' href='javascript:removeTimeZone()'> Remove </a>
+      <a class='miniButton' href='javascript:cancelTimeZone()'> Cancel </a>
+  </div>
+  <br>
+  <br>
+  <div> 
+    Change background color (analog clock)<br>
+    <select id='backgroundPalletAnalog' onclick="changeBackgroundAnalog(this.value)">
+      <option value='white'> White </option>
+      <option value='black'> Black </option>
+      <option value='blue'> Blue </option>
+      <option value='yellow'> Yellow </option>
+      <option value='green'> Green </option>
+      <option value='red'> Red </option>
+    </select>
+  </div>
+  <br>
+  <div> 
+    Change background color (digital clock)<br>
+    <select id='backgroundPalletDigital' onclick="changeBackgroundDigital(this.value)">
+      <option value='white'> White </option>
+      <option value='black'> Black </option>
+      <option value='blue'> Blue </option>
+      <option value='yellow'> Yellow </option>
+      <option value='green'> Green </option>
+      <option value='red'> Red </option>
+    </select>
+  </div>
+  <br>
+  <div>
+    Change font size (digital clock)<br>
+    <select id='fontSize' onclick="changeFontSize(this.value)">
+      <option value='40'> 1 </option>
+      <option value='60'> 2 </option>
+      <option value='80'> 3 </option>
+      <option value='90'> 4 </option>
+    </select>
+  </div>
+  <br>
+  <div>
+    Change analog clock border color<br>
+    <select id='borderColorAnalog' onclick="changeBorderColorAnalog(this.value)">
+      <option value='black'> Black </option>
+      <option value='white'> White </option>
+      <option value='blue'> Blue </option>
+      <option value='yellow'> Yellow </option>
+      <option value='green'> Green </option>
+      <option value='red'> Red </option>
+    </select>
+  </div>
+  <br>
+  <div>
+    Change digital clock border color<br>
+    <select id='borderColorDigital' onclick="changeBorderColorDigital(this.value)">
+      <option value='black'> Black </option>
+      <option value='white'> White </option>
+      <option value='blue'> Blue </option>
+      <option value='yellow'> Yellow </option>
+      <option value='green'> Green </option>
+      <option value='red'> Red </option>
+    </select>
+  </div>
+  <br>
+  <div>
+    Change analog clock border size<br>
+    <select id='borderSizeAnalog' onclick="changeBorderSizeAnalog(this.value)">
+      <option value='1'> 1 </option>
+      <option value='2'> 2 </option>
+      <option value='3'> 3 </option>
+      <option value='4'> 4 </option>
+    </select>
+  </div>
+  <br>
+  <div>
+    Change digital clock border size<br>
+    <select id='borderSizeDigital' onclick="changeBorderSizeDigital(this.value)">
+      <option value='1'> 1 </option>
+      <option value='2'> 2 </option>
+      <option value='3'> 3 </option>
+      <option value='4'> 4 </option>
+    </select>
+  </div>
+</body>
+
+</html>
